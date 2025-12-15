@@ -1,5 +1,5 @@
 <?php
-    include "TransactionController.php";
+    include "../../controllers/TransactionController.php";
 
     $id = $_POST["id"];
     $type = $_POST["type"];
@@ -10,4 +10,6 @@
 
     TransactionController::updateTransaction($id, $type, $title, $amount, $description, $date);
 
-    header("location: transactions.php");
+    header("location: ../../views/transactions/transactions.php");
+
+    exit;

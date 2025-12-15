@@ -1,5 +1,4 @@
 <?php
-
     class TransactionController {
 
         private static $connection;

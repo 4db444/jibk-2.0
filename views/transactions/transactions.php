@@ -1,5 +1,5 @@
 <?php
-    include "TransactionController.php";
+    include "../../controllers/TransactionController.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +12,11 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <?php include "./components/header.php" ?>
+    <?php include "../../components/header.php" ?>
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
-        <form action="./addTransaction.php" method="post"
+        <form action="../../endpoints/transactions/addTransaction.php" method="post"
               class="bg-white w-[400px] p-6 rounded-lg shadow-xl flex flex-col gap-4">
 
             <h1 class="text-2xl font-semibold text-green-600 text-center">Add Transaction</h1>
@@ -109,7 +109,7 @@
 
                             <td class='py-3 px-2 flex gap-2'>
 
-                                <form action=\"editTransaction.php\" method=\"post\">
+                                <form action=\"./editTransaction.php\" method=\"post\">
                                     <input type='hidden' name='id' value='{$row['id']}'>
                                     <input type='hidden' name='table' value='{$row['table']}'>
                                     <button type='submit'
@@ -118,7 +118,7 @@
                                     </button>
                                 </form>
 
-                                <form action=\"deleteTransaction.php\" method=\"post\">
+                                <form action=\"../../endpoints/transactions/deleteTransaction.php\" method=\"post\">
                                     <input type='hidden' name='id' value='{$row['id']}'>
                                     <input type='hidden' name='table' value='{$row['table']}'>
                                     <button type='submit'

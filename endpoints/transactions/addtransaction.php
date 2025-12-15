@@ -1,5 +1,5 @@
 <?php
-    include "TransactionController.php";
+    include "../../controllers/TransactionController.php";
 
     $type = $_POST["type"];
     $title = $_POST["title"];

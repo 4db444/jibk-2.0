@@ -1,5 +1,5 @@
 <?php
-    include "TransactionController.php";
+    include "../../controllers/TransactionController.php";
 
     $transaction = TransactionController::ShowTransaction($_POST["table"], $_POST["id"])->fetch(PDO::FETCH_ASSOC);
 ?>
@@ -14,11 +14,11 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <?php include "./components/header.php"; ?>
+    <?php include "../../components/header.php"; ?>
 
     <div class="max-w-7xl mx-auto p-6">
 
-        <form action="./updateTransaction.php" method="post"
+        <form action="../../endpoints/transactions/updateTransaction.php" method="post"
               class="bg-white w-full max-w-md p-6 mx-auto mt-10 rounded-lg shadow-lg flex flex-col gap-4">
 
             <h1 class="text-center text-2xl font-semibold text-green-600 mb-4 capitalize">

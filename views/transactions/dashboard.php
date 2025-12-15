@@ -1,5 +1,5 @@
 <?php
-    include "./TransactionController.php";
+    include "../../controllers/TransactionController.php";
 
     $total_incomes = TransactionController::GetTotoalTransactions("incomes");
     $total_expenses = TransactionController::GetTotoalTransactions("expenses");
@@ -23,7 +23,7 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <?php include "./components/header.php" ?>
+    <?php include "../../components/header.php" ?>
 
     <div class="max-w-7xl mx-auto p-6">
 
