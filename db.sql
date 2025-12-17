@@ -14,7 +14,7 @@ DROP Table IF EXISTS cards;
 CREATE TABLE IF NOT EXISTS cards (
     id INT PRIMARY KEY AUTO_INCREMENT,
     bank VARCHAR(25) NOT NULL,
-    type ENUM("master card", "visa"),
+    type ENUM("mastercard", "visa"),
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) 
         REFERENCES users(id)

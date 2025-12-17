@@ -5,22 +5,21 @@
 
         static function Connect () {
             try {
-                self::$connection = new PDO("mysql:host=localhost;dbname=jibk", "root", "Brahim@444");
+                self::$connection = new PDO("mysql:host=localhost;dbname=jibk2.0", "root", "Brahim@444");
             }catch(PDOException $e){
                 echo "Error: " . $e->getMessage();
             }
         }
 
-        static function CreateTransaction (string $type, string $title, float $amount, string $description, string $date){
+        static function CreateTransaction (string $type, string $title, float $amount, string $description, string $date, $card_id){
 
             if(empty($date)){
-                $sql = "insert into $type (title, amount, description) values ('$title', $amount, '$description')";
+                $sql = "insert into $type (title, amount, description, card_id) values ('$title', $amount, '$description', $card_id)";
             }else {
-                $sql = "insert into $type (title, amount, description, date) values ('$title', $amount, '$description', '$date')";
+                $sql = "insert into $type (title, amount, description, date, card_id) values ('$title', $amount, '$description', '$date', $card_id)";
             }
 
             $query = self::$connection->query($sql);
-
         }
 
         static function ShowAllTransactions (){

@@ -2,8 +2,8 @@
     <h1 class="text-4xl font-semibold">JIBK</h1>
     <nav>
         <ul class="flex gap-4">
-            <li><a href="./transactions.php">Transactions</a></li>
-            <li><a href="./dashboard.php">Dashboard</a></li>
+            <li><a href="<?= BASE_URL ?>/views/transactions/transactions.php">Transactions</a></li>
+            <li><a href="<?= BASE_URL ?>/views/transactions/dashboard.php">Dashboard</a></li>
         </ul>
     </nav>
 </header>

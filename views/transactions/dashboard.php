@@ -1,4 +1,9 @@
 <?php
+    include "../../conf.php";
+    if (!isset($_SESSION["user"])){
+        header("location: " . BASE_URL . "/views/auth/login.php");
+        die();
+    }
     include "../../controllers/TransactionController.php";
 
     $total_incomes = TransactionController::GetTotoalTransactions("incomes");

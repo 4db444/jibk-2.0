@@ -1,5 +1,10 @@
 <?php
-    include "../../controllers/TransactionController.php";
+    include "../../conf.php";
+    if (!isset($_SESSION["user"])){
+        header("location: " . BASE_URL . "/views/auth/login.php");
+        die();
+    }
+    include BASE_PATH . "/controllers/TransactionController.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +17,11 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <?php include "../../components/header.php" ?>
+    <?php include BASE_PATH . "/components/header.php" ?>
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
-        <form action="../../endpoints/transactions/addTransaction.php" method="post"
+        <form action="<?= BASE_PATH ?>/endpoints/transactions/addTransaction.php" method="post"
               class="bg-white w-[400px] p-6 rounded-lg shadow-xl flex flex-col gap-4">
 
             <h1 class="text-2xl font-semibold text-green-600 text-center">Add Transaction</h1>
