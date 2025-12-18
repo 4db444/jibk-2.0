@@ -14,10 +14,24 @@
             }
         }
 
-        static function SignUp (string $username, string $password, string $password_confirmation, string $bank, int $initial_balance, string $type) {
+        static function Create (string $username, string $email, string $password) {
+            $insert_user_statment = self::$connection->prepare("
+                INSERT INTO users (username, email, password)
+                VALUES (:username, :email, :password)
+            ");
+
+            $insert_user_statment->execute([
+                ":username" => $username,
+                ":email" => $email,
+                ":password" => password_hash($password, PASSWORD_DEFAULT)
+            ]);
+        }
+
+        static function SignUp (string $username, string $email, string $password, string $password_confirmation, string $bank, int $initial_balance, string $type) {
             $errors = [];
 
             if (strlen($username) < 6) $errors["username"] = "User name must be at least 6 characters.";
+            if (!preg_match('/^[a-z0-9]+@[a-z0-9]+\.[a-z]+$/i', $email)) $errors ["email"] = "Invalide email";
             if (strlen($password) < 8) $errors["password"] = "Password must be at least 8 characters.";
             if ($password !== $password_confirmation) $errors["password_confirmation"] = "Wrong password confirmation.";
             if (!$bank) $errors["bank"] = "Invalide bank name.";
@@ -27,27 +41,19 @@
                 return ["success" => false, "errors" => $errors];
             }
 
-            $check_username_statment = self::$connection->prepare("SELECT 1 FROM users WHERE username = :username");
+            $check_email_statment = self::$connection->prepare("SELECT 1 FROM users WHERE email = :email");
 
-            $check_username_statment->execute([
-                ":username" => $username
+            $check_email_statment->execute([
+                ":email" => $email
             ]);
 
-            if ($check_username_statment->fetch()) return [
+            if ($check_email_statment->fetch()) return [
                 "success" => false,
-                "errors" => ["username" => "This username already exists"]
+                "errors" => ["email" => "This email already exists"]
             ];
 
             // creating the user record
-            $insert_user_statment = self::$connection->prepare("
-                INSERT INTO users(username, password) 
-                values (:username, :password)"
-            );
-
-            $insert_user_statment->execute([
-                ":username" => $username,
-                ":password" => password_hash($password, PASSWORD_DEFAULT)
-            ]);
+            self::Create($username, $email, $password);
 
             // creating the card record.
             CardController::create($bank, $type, $username);
@@ -61,6 +67,34 @@
             TransactionController::CreateTransaction ("incomes", "Initial Balance", $initial_balance, "the initial balance when you created your acount", "", $card_id);
             
             return ["success" => true];
+        }
+
+        static function login (string $email, string $password){
+            $errors = [];
+
+            $user_statment = self::$connection->prepare("
+                SELECT * 
+                FROM users
+                WHERE email = :email
+            ");
+
+            $user_statment->execute([
+                ":email" => $email
+            ]);
+
+            $user = $user_statment->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user["password"])){
+                return [
+                    "success" => true,
+                    "user" => $user
+                ];
+            }
+
+            return [
+                "success" => false,
+                "error" => "Wrong credentials"
+            ];
         }
     }
 

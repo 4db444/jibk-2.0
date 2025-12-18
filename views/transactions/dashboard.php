@@ -1,5 +1,6 @@
 <?php
     include "../../conf.php";
+    session_start();
     if (!isset($_SESSION["user"])){
         header("location: " . BASE_URL . "/views/auth/login.php");
         die();

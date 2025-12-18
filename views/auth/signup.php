@@ -3,6 +3,8 @@
 
     session_start();
 
+    if(!empty($_SESSION["user"])) header ("location: " . BASE_URL . "/views/transactions/transactions.php");
+
     $errors = $_SESSION["errors"] ?? [];
     $old_values = $_SESSION["old_values"] ?? [];
 
@@ -46,6 +48,23 @@
                     <?php if (!empty($errors["username"])): ?>
                         <p class="text-red-500 text-sm mt-1">
                             <?= $errors["username"] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+                <!-- email -->
+                <div>
+                    <label class="block font-medium mb-1">Email</label>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder="Enter email"
+                        required
+                        value="<?= $old_values["email"] ?? "" ?>"
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                    >
+                    <?php if (!empty($errors["email"])): ?>
+                        <p class="text-red-500 text-sm mt-1">
+                            <?= $errors["email"] ?>
                         </p>
                     <?php endif; ?>
                 </div>
