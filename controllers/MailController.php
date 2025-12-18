@@ -3,7 +3,7 @@
     use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;
 
-    require 'vendor/autoload.php';
+    require BASE_PATH . '/vendor/autoload.php';
     require __DIR__ . '/../mail.conf.php';
 
     class MailController {

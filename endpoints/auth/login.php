@@ -3,15 +3,18 @@
     include BASE_PATH . "/controllers/UserController.php";
     session_start();
 
+    $error = $_SESSION["error"] ?? [];
+    unset($_SESSION["error"]);
+
     if ($_SERVER["REQUEST_METHODE"] = "POST"){
         $email = trim($_POST["email"]);
         $password = $_POST["password"];
 
         $result = UserController::login($email, $password);
 
-        if($result["success"]){
-            
-
+        if(!$result["success"]){
+            $_SESSION["error"] = $result["error"];
+            header("location: " . BASE_URL . "/views/auth/login.php");
         }
     }
 ?>
@@ -43,12 +46,14 @@
                     <label class="block font-medium mb-1">Check your email </label>
                     <input
                         type="text"
-                        name="opt"
+                        name="otp"
                         placeholder="OTP password"
                         required
                         class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                     >
                 </div>
+
+                <input type="hidden" name="user_id" value="<?= $result["user_id"] ?>" />
 
                 <!-- Submit -->
                 <button
