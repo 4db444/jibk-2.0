@@ -2,6 +2,7 @@
 
     include __DIR__ . "/CardController.php";
     include __DIR__ . "/TransactionController.php";
+    include __DIR__ . "/MailController.php";
 
     class UserController {
         private static $connection;
@@ -85,6 +86,16 @@
             $user = $user_statment->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user["password"])){
+                $otp_statment = self::$connection->prepare("insert into otp (otp, expire_at, user_id) values (:otp, :expire_at, :user_id)");
+
+                $otp_statment->execute([
+                    ":otp" => random_int(100000, 999999),
+                    ":expire_at" => (new DateTime())->modify("+10 minutes")->format("Y-m-d H:i:s"),
+                    ":user_id" => $user["id"]
+                ]);
+
+
+
                 return [
                     "success" => true,
                     "user" => $user
