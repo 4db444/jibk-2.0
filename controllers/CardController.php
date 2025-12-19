@@ -36,6 +36,13 @@
                 ":user_id" => $user_id
             ]);
         }
+
+        static function GetAllCards (){
+            return self::$connection->query("
+                SELECT *
+                FROM cards
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 
     CardController::Connect();

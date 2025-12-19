@@ -6,6 +6,9 @@
         die();
     }
     include BASE_PATH . "/controllers/TransactionController.php";
+    include BASE_PATH . "/controllers/CardController.php";
+
+    $cards = CardController::GetAllCards();
 
     $incomes_categories = TransactionController::GetCategegories("incomes");
     $expenses_categories = TransactionController::GetCategegories("expenses");
@@ -52,6 +55,17 @@
                 <label class="block font-medium mb-1" for="date">Date</label>
                 <input type="date" name="date" id="date"
                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1" for="card">Card</label>
+                <select name="card_id" id="card" required
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    <option value="" disabled selected>Select transaction card</option>
+                    <?php foreach($cards as $card): ?>
+                        <option value="<?= $card["id"] ?>" class="capitalize"><?= $card["bank"] ?> - <?= $card["type"] ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div>
