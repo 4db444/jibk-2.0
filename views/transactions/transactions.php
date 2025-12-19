@@ -109,24 +109,26 @@
                     <th class="py-3 px-2 font-semibold">Type</th>
                     <th class="py-3 px-2 font-semibold">Date</th>
                     <th class="py-3 px-2 font-semibold">Description</th>
+                    <th class="py-3 px-2 font-semibold">Bank</th>
+                    <th class="py-3 px-2 font-semibold">Type</th>
                     <th class="py-3 px-2 font-semibold">Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 <?php
-                    $query_res = TransactionController::ShowAllTransactions();
+                    $transactions = TransactionController::ShowAllTransactions();
 
-                    while ($row = $query_res->fetch(PDO::FETCH_ASSOC)) {
+                    foreach ($transactions as $transaction) {
 
-                        $isExpense = $row["table"] === "expenses";
+                        $isExpense = $transaction["table"] === "expenses";
                         $color = $isExpense ? "red" : "green";
                         $icon = $isExpense ? "fa-arrow-up" : "fa-arrow-down";
 
                         echo "
                         <tr class='border-b border-gray-200 hover:bg-gray-50'>
-                            <td class='py-3 px-2'>{$row["title"]}</td>
-                            <td class='py-3 px-2'>{$row["amount"]}</td>
+                            <td class='py-3 px-2'>{$transaction["title"]}</td>
+                            <td class='py-3 px-2'>{$transaction["amount"]}</td>
 
                             <td class='py-3 px-2'>
                                 <span class='w-7 h-7 rounded-full border-2 border-$color-600 text-$color-600 flex justify-center items-center'>
@@ -134,14 +136,16 @@
                                 </span>
                             </td>
 
-                            <td class='py-3 px-2'>{$row["date"]}</td>
-                            <td class='py-3 px-2'>{$row["description"]}</td>
+                            <td class='py-3 px-2'>{$transaction["date"]}</td>
+                            <td class='py-3 px-2'>{$transaction["description"]}</td>
+                            <td class='py-3 px-2 uppercase'>{$transaction["bank"]}</td>
+                            <td class='py-3 px-2 uppercase'>{$transaction["type"]}</td>
 
                             <td class='py-3 px-2 flex gap-2'>
 
                                 <form action=\"./editTransaction.php\" method=\"post\">
-                                    <input type='hidden' name='id' value='{$row['id']}'>
-                                    <input type='hidden' name='table' value='{$row['table']}'>
+                                    <input type='hidden' name='id' value='{$transaction['id']}'>
+                                    <input type='hidden' name='table' value='{$transaction['table']}'>
                                     <button type='submit'
                                         class='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm'>
                                         Update
@@ -149,8 +153,8 @@
                                 </form>
 
                                 <form action=\"../../endpoints/transactions/deleteTransaction.php\" method=\"post\">
-                                    <input type='hidden' name='id' value='{$row['id']}'>
-                                    <input type='hidden' name='table' value='{$row['table']}'>
+                                    <input type='hidden' name='id' value='{$transaction['id']}'>
+                                    <input type='hidden' name='table' value='{$transaction['table']}'>
                                     <button type='submit'
                                         class='bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm'>
                                         Delete

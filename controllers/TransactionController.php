@@ -25,9 +25,14 @@
         static function ShowAllTransactions (){
             return self::$connection->query("
                 select *, 'incomes' as 'table' from incomes 
-                union select *, 'expenses' as 'table' from expenses
+                join cards on cards.id = incomes.id
+
+                union 
+
+                select *, 'expenses' as 'table' from expenses
+                join cards on expenses.id = cards.id
                 order by date desc
-            ");
+            ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
         static function DeleteTransaction(string $table, int $id){
