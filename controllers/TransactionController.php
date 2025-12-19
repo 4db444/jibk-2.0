@@ -11,27 +11,52 @@
             }
         }
 
-        static function CreateTransaction (string $type, string $title, float $amount, string $description, string $date, $card_id){
+        static function CreateTransaction (string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id){
 
-            if(empty($date)){
-                $sql = "insert into $type (title, amount, description, card_id) values ('$title', $amount, '$description', $card_id)";
-            }else {
-                $sql = "insert into $type (title, amount, description, date, card_id) values ('$title', $amount, '$description', '$date', $card_id)";
+            if (empty($date)){
+                $create_transaction_statment = self::$connection->prepare("
+                    insert into $type (title, amount, description, card_id, category_id)
+                    values (:title, :amount, :description, :card_id, :category_id)
+                ");
+    
+                $create_transaction_statment->execute([
+                    ":title" => $title,
+                    ":amount" => $amount,
+                    ":description" => $description,
+                    ":card_id" => $card_id,
+                    ":category_id" => $category_id
+                ]);
+            }else{
+                $create_transaction_statment = self::$connection->prepare("
+                    insert into $type (title, amount, description, date, card_id, category_id)
+                    values (:title, :amount, :description, :date, :card_id, :category_id)
+                ");
+    
+                $create_transaction_statment->execute([
+                    ":title" => $title,
+                    ":amount" => $amount,
+                    ":description" => $description,
+                    ":date" => $date,
+                    ":card_id" => $card_id,
+                    ":category_id" => $category_id
+                ]);
             }
-
-            $query = self::$connection->query($sql);
         }
 
         static function ShowAllTransactions (){
             return self::$connection->query("
-                select *, 'incomes' as 'table' from incomes 
-                join cards on cards.id = incomes.id
-
-                union 
-
-                select *, 'expenses' as 'table' from expenses
-                join cards on expenses.id = cards.id
-                order by date desc
+                (
+                    select *, 'incomes' as 'table' from incomes 
+                    join cards on cards.id = incomes.card_id
+                    where cards.user_id = {$_SESSION["user"]["id"]}
+                )
+                union all
+                (
+                    select *, 'expenses' as 'table' from expenses
+                    join cards on expenses.card_id = cards.id
+                    where cards.user_id = {$_SESSION["user"]["id"]}
+                )
+                order by date asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 

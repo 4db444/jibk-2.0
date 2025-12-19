@@ -79,7 +79,7 @@
             ")->fetch(PDO::FETCH_ASSOC)["id"];
 
             // inserting the initial balance.
-            TransactionController::CreateTransaction ("incomes", "Initial Balance", $initial_balance, "the initial balance when you created your acount", "", $card_id);
+            TransactionController::CreateTransaction ("incomes", "Initial Balance", $initial_balance, "the initial balance when you created your acount", null, $card_id, null);
             
             return ["success" => true];
         }

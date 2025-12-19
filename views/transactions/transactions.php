@@ -28,7 +28,7 @@
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
-        <form action="<?= BASE_PATH ?>/endpoints/transactions/addTransaction.php" method="post"
+        <form action="<?= BASE_URL ?>/endpoints/transactions/addTransaction.php" method="post"
               class="bg-white w-[400px] p-6 rounded-lg shadow-xl flex flex-col gap-4">
 
             <h1 class="text-2xl font-semibold text-green-600 text-center">Add Transaction</h1>
@@ -82,6 +82,7 @@
                 <label class="block font-medium mb-1" for="category_id">Categories</label>
                 <select name="category_id" id="category_id"
                         class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="" disabled selected>Select your transaction category</option>
                 </select>
             </div>
 

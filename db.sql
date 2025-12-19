@@ -96,6 +96,24 @@ CREATE TABLE IF NOT EXISTS otp (
         ON DELEte CASCADE
 );
 
+DROP TABLE IF EXISTS incomes_events;
+CREATE TABLE IF NOT EXISTS incomes_events (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    income_id INT NOT NULL,
+    FOREIGN KEY (income_id)
+        REFERENCES incomes(id)
+        ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS expenses_events;
+CREATE TABLE IF NOT EXISTS expenses_events (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    expense_id INT NOT NULL,
+    FOREIGN KEY (expense_id)
+        REFERENCES expenses(id)
+        ON DELETE CASCADE
+);
+
 INSERT INTO incomes_categories (id, name) VALUES
 (1, 'Salary'),
 (2, 'Hourly Wages'),
