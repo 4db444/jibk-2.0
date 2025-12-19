@@ -6,6 +6,9 @@
         die();
     }
     include BASE_PATH . "/controllers/TransactionController.php";
+
+    $incomes_categories = TransactionController::GetCategegories("incomes");
+    $expenses_categories = TransactionController::GetCategegories("expenses");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,6 +61,13 @@
                     <option value="" disabled selected>Select transaction type</option>
                     <option value="expenses">Expense</option>
                     <option value="incomes">Income</option>
+                </select>
+            </div>
+
+            <div id="categories-container" class="hidden">
+                <label class="block font-medium mb-1" for="category_id">Categories</label>
+                <select name="category_id" id="category_id"
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
                 </select>
             </div>
 
@@ -145,6 +155,29 @@
     <script>
         const modal = document.getElementById("modal");
         const btn = document.getElementById("add-modal-btn");
+        const typeSelect = document.getElementById("type");
+        const categoriesContainer = document.getElementById("categories-container");
+        const categorySelect = document.getElementById("category_id");
+        const expensesCategories = <?= json_encode($expenses_categories) ?>;
+        const incomesCategories = <?= json_encode($incomes_categories) ?>;
+
+        typeSelect.addEventListener("change", e => {
+            categoriesContainer.classList.remove("hidden");
+            categorySelect.innerHTML = `<option value="" disabled selected>Select your transaction category</option>`;
+            if (typeSelect.value === "incomes"){
+                incomesCategories.map (cat => {
+                    categorySelect.innerHTML += `
+                        <option value="${cat.id}">${cat.name}</option>
+                    `
+                })
+            }else {
+                expensesCategories.map (cat => {
+                    categorySelect.innerHTML += `
+                        <option value="${cat.id}">${cat.name}</option>
+                    `
+                })
+            }
+        })
 
         btn.addEventListener("click", () => {
             modal.classList.remove("hidden");
@@ -153,6 +186,8 @@
         modal.addEventListener("click", e => {
             if (e.target.id === "modal") modal.classList.add("hidden");
         });
+
+
     </script>
 
 </body>

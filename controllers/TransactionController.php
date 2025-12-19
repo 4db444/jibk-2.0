@@ -79,6 +79,13 @@
 
             return self::$connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         }
+
+        static function GetCategegories (string $table) {
+            return self::$connection->query("
+                SELECT *
+                FROM {$table}_categories
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 
     TransactionController::Connect();
