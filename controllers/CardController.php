@@ -14,20 +14,18 @@
             }
         }
 
-        static function Create (string $bank, string $type, int $is_main, string $email) {
+        static function Create (string $bank, string $type, int $is_main, int $user_id) {
+            $errors = [];
 
-            $user_statment = self::$connection->prepare("
-                SELECT `id`
-                FROM `users`
-                WHERE `email` = :email
-            ");
-            
-            
-            $user_statment->execute([
-                ":email" => $email
-            ]);
-            
-            $user_id = $user_statment->fetch(PDO::FETCH_ASSOC)["id"];
+            if (empty($bank)) $errors["bank"] = "Invalide bank name";
+            if (empty($type)) $errors["type"] = "Invalide card type";
+
+            if($errors){
+                return [
+                    "success" => false,
+                    "errors" => $errors
+                ];
+            }
 
             $insert_card_statment = self::$connection->prepare("
                 insert into cards (bank, type, is_main, user_id)
@@ -40,13 +38,17 @@
                 ":is_main" => $is_main,
                 ":user_id" => $user_id
             ]);
+
+            return [
+                "success" => true
+            ];
         }
 
         static function GetAllUserCards (int $user_id){
             return self::$connection->query("
                 SELECT *
                 FROM cards
-                WHERE id = $user_id
+                WHERE user_id = $user_id
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -74,7 +76,7 @@
             if ($count_cards_statment->fetch()["total"] > 1){
                 $delete_card_statment = self::$connection->prepare("
                     delete from cards
-                    where id = :id and user_id = user_id
+                    where id = :id and user_id = :user_id
                 ");
 
                 $delete_card_statment->execute([
@@ -88,7 +90,7 @@
             }else{
                 return [
                     "success" => false,
-                    "error" => "You can not delete this card, this is the only remaining one!"
+                    "errors" => ["Cards count error" => "You can not delete this card, this is the only remaining one!"]
                 ];
             }
         }

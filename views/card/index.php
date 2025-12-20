@@ -8,8 +8,8 @@
 
     include BASE_PATH . "/controllers/CardController.php";
 
-    $error = $_SESSION["error"];
-    unset($_SESSION["error"]);
+    $errors = $_SESSION["errors"] ?? [];
+    unset($_SESSION["errors"]);
     $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
 ?>
 <!DOCTYPE html>
@@ -27,27 +27,37 @@
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
-        <form action="<?= BASE_URL ?>/endpoints/transactions/addTransaction.php" method="post"
+        <form action="<?= BASE_URL ?>/endpoints/card/store.php" method="post"
               class="bg-white w-[400px] p-6 rounded-lg shadow-xl flex flex-col gap-4">
 
             <h1 class="text-2xl font-semibold text-green-600 text-center">Add Card</h1>
 
             <div>
-                <label class="block font-medium mb-1" for="title">Title</label>
-                <input type="text" name="title" id="title" required
+                <label class="block font-medium mb-1" for="title">bank</label>
+                <input type="text" name="bank" id="bank" required
                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
             </div>
 
             <div>
-                <label class="block font-medium mb-1" for="amount">Amount</label>
-                <input type="number" name="amount" id="amount" required
-                       class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                <select
+                    name="type"
+                    required
+                    class="w-full border border-gray-300 px-3 py-2 rounded-lg bg-white focus:ring-2 focus:ring-green-500 outline-none"
+                >
+                    <option value="" disabled selected>Select your card type</option>
+                    <option value="mastercard" <?= ($old_values["type"] ?? "") === "mastercard" ? "selected" : "" ?>>
+                        Mastercard
+                    </option>
+                    <option value="visa" <?= ($old_values["type"] ?? "") === "visa" ? "selected" : "" ?>>
+                        Visa
+                    </option>
+                </select>
             </div>
-
+                    
             <div>
-                <label class="block font-medium mb-1" for="description">Description</label>
-                <textarea name="description" id="description"
-                          class="w-full border border-gray-300 px-3 py-2 rounded-lg resize-none focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                <label class="block font-medium mb-1" for="description">Initial balance</label>
+                <input type="number" name="initial_balance" id="initial_balance"
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
             </div>
 
             <button type="submit" class="bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Submit</button>
@@ -66,11 +76,6 @@
 
     <!-- Table Container -->
     <div class="max-w-7xl mx-auto p-6 bg-white shadow rounded-lg">
-
-        <?php if(!empty($error)): ?>
-            <p><?= $error ?></p>
-        <?php endif; ?>
-        
         <table class="w-full border-collapse">
             <thead>
                 <tr class="bg-gray-100 border-b border-gray-300 text-left">
@@ -90,8 +95,8 @@
                         $current_balance = $total_incomes - $total_expenses;
                         echo "
                         <tr class='border-b border-gray-200 hover:bg-gray-50'>
-                            <td class='py-3 px-2'>{$card["bank"]}</td>
-                            <td class='py-3 px-2'>{$card["type"]}</td>
+                            <td class='py-3 px-2 capitalize'>{$card["bank"]}</td>
+                            <td class='py-3 px-2 capitalize'>{$card["type"]}</td>
                             <td class='py-3 px-2'>main</td>
                             <td class='py-3 px-2'>{$current_balance}</td>
 

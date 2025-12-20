@@ -70,8 +70,20 @@
             // creating the user record
             self::Create($username, $email, $password);
 
+            $user_statment = self::$connection->prepare("
+                SELECT `id`
+                FROM `users`
+                WHERE `email` = :email
+            ");
+            
+            $user_statment->execute([
+                ":email" => $email
+            ]);
+            
+            $user_id = $user_statment->fetch(PDO::FETCH_ASSOC)["id"];
+
             // creating the card record.
-            CardController::create($bank, $type, $email);
+            CardController::create($bank, $type, $user_id);
 
             $card_id_statment = self::$connection->prepare("
                 SELECT cards.id
