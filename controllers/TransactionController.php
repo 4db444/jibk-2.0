@@ -46,17 +46,17 @@
         static function ShowAllTransactions (){
             return self::$connection->query("
                 (
-                    select *, 'incomes' as 'table' from incomes 
+                    select incomes.id, title, amount, description, date, bank, type, 'incomes' as 'table' from incomes 
                     join cards on cards.id = incomes.card_id
-                    where cards.user_id = {$_SESSION["user"]["id"]}
+                    where cards.user_id = 1
                 )
                 union all
                 (
-                    select *, 'expenses' as 'table' from expenses
+                    select expenses.id, title, amount, description, date, bank, type, 'expenses' as 'table' from expenses
                     join cards on expenses.card_id = cards.id
-                    where cards.user_id = {$_SESSION["user"]["id"]}
-                )
-                order by date asc
+                    where cards.user_id = 1
+                ) 
+                ORDER BY date desc, id desc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -68,20 +68,39 @@
             return self::$connection->query("select * from $table where id = $id");
         }
 
-        static function UpdateTransaction (int $id, string $type, string $title, float $amount, string $description, string $date){
-            if(empty($date)){
-                $sql = "update $type 
-                    set title = \"$title\", amount = $amount, description = \"$description\"
-                    where id = $id
-                ";
-            }else {
-                $sql = "update $type
-                set title = \"$title\", amount = $amount, description = \"$description\", date = \"$date\"
-                where id = $id
-            ";
+        static function UpdateTransaction (int $id, string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id){
+            if (empty($date)){
+                $create_transaction_statment = self::$connection->prepare("
+                    update $type
+                    set title = :title, amount = :amount, description = :description, card_id = :card_id, category_id = :category_id
+                    where id = :id
+                ");
+    
+                $create_transaction_statment->execute([
+                    ":id" => $id,
+                    ":title" => $title,
+                    ":amount" => $amount,
+                    ":description" => $description,
+                    ":card_id" => $card_id,
+                    ":category_id" => $category_id
+                ]);
+            }else{
+                $create_transaction_statment = self::$connection->prepare("
+                    update $type
+                    set title = :title, amount = :amount, description = :description, date = :date, card_id = :card_id, category_id = :category_id
+                    where id = :id
+                ");
+    
+                $create_transaction_statment->execute([
+                    ":id" => $id,
+                    ":title" => $title,
+                    ":amount" => $amount,
+                    ":description" => $description,
+                    ":date" => $date,
+                    ":card_id" => $card_id,
+                    ":category_id" => $category_id
+                ]);
             }
-
-            $query = self::$connection->query($sql);
         }
 
         static function GetTotoalTransactions (string $table){

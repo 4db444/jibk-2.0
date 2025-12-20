@@ -1,7 +1,12 @@
 <?php
-    include "../../controllers/TransactionController.php";
+    session_start();
+    include "../../conf.php";
+    include BASE_PATH . "/controllers/CardController.php";
+    include BASE_PATH . "/controllers/TransactionController.php";
 
     $transaction = TransactionController::ShowTransaction($_POST["table"], $_POST["id"])->fetch(PDO::FETCH_ASSOC);
+    $categories = TransactionController::GetCategegories($_POST["table"]);
+    $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +19,7 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-    <?php include "../../components/header.php"; ?>
+    <?php include BASE_PATH . "/components/header.php"; ?>
 
     <div class="max-w-7xl mx-auto p-6">
 
@@ -54,6 +59,37 @@
                 <input type="date" name="date" id="date"
                        value="<?= htmlspecialchars($transaction["date"]) ?>"
                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1" for="card">Card</label>
+                <select name="card_id" id="card" required
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    <?php foreach($cards as $card): ?>
+                        <option 
+                            value="<?= $card["id"] ?>" 
+                            <?= $card["id"] === $transaction["card_id"] ? "selected " : ""?> 
+                            class="capitalize">
+                                <?= $card["bank"] ?> - <?= $card["type"] ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div id="categories-container">
+                <label class="block font-medium mb-1" for="category_id">Categories</label>
+                <select name="category_id" id="category_id"
+                        class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="" disabled <?= empty($transaction["category_id"]) ? "selected" : "" ?>>Select your transaction category</option>
+                        <?php foreach($categories as $category): ?>
+                            <option 
+                                value="<?= $category["id"] ?>"
+                                <?= $category["id"] === $transaction["category_id"] ? "selected " : ""?>     
+                            >
+                                <?= $category["name"] ?>
+                            </option>
+                        <?php endforeach; ?>
+                </select>
             </div>
 
             <!-- Hidden fields -->
