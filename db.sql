@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS cards (
     id INT PRIMARY KEY AUTO_INCREMENT,
     bank VARCHAR(25) NOT NULL,
     type ENUM("mastercard", "visa"),
+    is_main BOOLEAN NOT NULL DEFAULT 0,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) 
         REFERENCES users(id)
@@ -172,14 +173,4 @@ INSERT INTO expenses_categories (id, name) VALUES
 (36, 'Pets'),
 (37, 'Other Expenses');
 
-(
-    select incomes.id, title, amount, description, date, bank, type, 'incomes' as 'table' from incomes 
-    join cards on cards.id = incomes.card_id
-    where cards.user_id = 1
-)
-union all
-(
-    select expenses.id, title, amount, description, date, bank, type, 'expenses' as 'table' from expenses
-    join cards on expenses.card_id = cards.id
-    where cards.user_id = 1
-) ORDER BY date desc; 
+select (select sum(amount) from incomes) - (select sum(1));

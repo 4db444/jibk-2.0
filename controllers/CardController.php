@@ -14,7 +14,7 @@
             }
         }
 
-        static function Create (string $bank, string $type, string $email) {
+        static function Create (string $bank, string $type, int $is_main, string $email) {
 
             $user_statment = self::$connection->prepare("
                 SELECT `id`
@@ -30,13 +30,14 @@
             $user_id = $user_statment->fetch(PDO::FETCH_ASSOC)["id"];
 
             $insert_card_statment = self::$connection->prepare("
-                insert into cards (bank, type, user_id)
-                values (:bank, :type, :user_id)
+                insert into cards (bank, type, is_main, user_id)
+                values (:bank, :type, :is_main, :user_id)
             ");
 
             $insert_card_statment->execute([
                 ":bank" => $bank,
                 ":type" => $type,
+                ":is_main" => $is_main,
                 ":user_id" => $user_id
             ]);
         }
@@ -47,6 +48,14 @@
                 FROM cards
                 WHERE id = $user_id
             ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        static function GetTotalExpenses(int $id){
+            return self::$connection->query("select sum(amount) AS total from expenses")->fetch(PDO::FETCH_ASSOC)["total"];
+        }
+
+        static function GetTotalIncomes(int $id){
+            return self::$connection->query("select sum(amount) AS total from incomes")->fetch(PDO::FETCH_ASSOC)["total"];
         }
     }
 
