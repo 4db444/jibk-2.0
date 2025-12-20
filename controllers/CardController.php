@@ -57,6 +57,41 @@
         static function GetTotalIncomes(int $id){
             return self::$connection->query("select sum(amount) AS total from incomes")->fetch(PDO::FETCH_ASSOC)["total"];
         }
+
+        static function destroy (int $id) {
+            $user_id = $_SESSION["user"]["id"];
+
+            $count_cards_statment = self::$connection->prepare("
+                select count(*) as total
+                from cards
+                where user_id = :user_id
+            ");
+
+            $count_cards_statment->execute([
+                ":user_id" => $user_id
+            ]);
+
+            if ($count_cards_statment->fetch()["total"] > 1){
+                $delete_card_statment = self::$connection->prepare("
+                    delete from cards
+                    where id = :id and user_id = user_id
+                ");
+
+                $delete_card_statment->execute([
+                    ":id" => $id,
+                    ":user_id" => $user_id,
+                ]);
+
+                return [
+                    "success" => true,
+                ];
+            }else{
+                return [
+                    "success" => false,
+                    "error" => "You can not delete this card, this is the only remaining one!"
+                ];
+            }
+        }
     }
 
     CardController::Connect();

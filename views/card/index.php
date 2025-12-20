@@ -5,8 +5,11 @@
         header("location: " . BASE_URL . "/views/auth/login.php");
         die();
     }
+
     include BASE_PATH . "/controllers/CardController.php";
 
+    $error = $_SESSION["error"];
+    unset($_SESSION["error"]);
     $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
 ?>
 <!DOCTYPE html>
@@ -63,6 +66,11 @@
 
     <!-- Table Container -->
     <div class="max-w-7xl mx-auto p-6 bg-white shadow rounded-lg">
+
+        <?php if(!empty($error)): ?>
+            <p><?= $error ?></p>
+        <?php endif; ?>
+        
         <table class="w-full border-collapse">
             <thead>
                 <tr class="bg-gray-100 border-b border-gray-300 text-left">
@@ -97,7 +105,7 @@
                                     </button>
                                 </form>
 
-                                <form action=\"../../endpoints/transactions/deleteTransaction.php\" method=\"post\">
+                                <form action=\"../../endpoints/card/delete.php\" method=\"post\">
                                     <input type='hidden' name='id' value='{$card['id']}'>
                                     <button type='submit'
                                         class='bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm'>
@@ -118,28 +126,6 @@
         const modal = document.getElementById("modal");
         const btn = document.getElementById("add-modal-btn");
         const typeSelect = document.getElementById("type");
-        const categoriesContainer = document.getElementById("categories-container");
-        const categorySelect = document.getElementById("category_id");
-        const expensesCategories = <?= json_encode($expenses_categories) ?>;
-        const incomesCategories = <?= json_encode($incomes_categories) ?>;
-
-        typeSelect.addEventListener("change", e => {
-            categoriesContainer.classList.remove("hidden");
-            categorySelect.innerHTML = `<option value="" disabled selected>Select your transaction category</option>`;
-            if (typeSelect.value === "incomes"){
-                incomesCategories.map (cat => {
-                    categorySelect.innerHTML += `
-                        <option value="${cat.id}">${cat.name}</option>
-                    `
-                })
-            }else {
-                expensesCategories.map (cat => {
-                    categorySelect.innerHTML += `
-                        <option value="${cat.id}">${cat.name}</option>
-                    `
-                })
-            }
-        })
 
         btn.addEventListener("click", () => {
             modal.classList.remove("hidden");
