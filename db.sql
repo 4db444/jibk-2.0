@@ -171,3 +171,16 @@ INSERT INTO expenses_categories (id, name) VALUES
 (35, 'Childcare'),
 (36, 'Pets'),
 (37, 'Other Expenses');
+
+(
+    select title, amount, description, date, bank, type, 'incomes' as 'table' from incomes 
+    join cards on cards.id = incomes.card_id
+    where cards.user_id = 1
+)
+union all
+(
+    select title, amount, description, date, bank, type, 'expenses' as 'table' from expenses
+    join cards on expenses.card_id = cards.id
+    where cards.user_id = 1
+)
+order by date desc; 

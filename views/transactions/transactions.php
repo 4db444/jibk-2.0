@@ -8,7 +8,7 @@
     include BASE_PATH . "/controllers/TransactionController.php";
     include BASE_PATH . "/controllers/CardController.php";
 
-    $cards = CardController::GetAllCards();
+    $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
 
     $incomes_categories = TransactionController::GetCategegories("incomes");
     $expenses_categories = TransactionController::GetCategegories("expenses");

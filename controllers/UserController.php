@@ -71,12 +71,20 @@
             self::Create($username, $email, $password);
 
             // creating the card record.
-            CardController::create($bank, $type, $username);
+            CardController::create($bank, $type, $email);
 
-            $card_id = self::$connection->query("
-                SELECT id
-                FROM cards
-            ")->fetch(PDO::FETCH_ASSOC)["id"];
+            $card_id_statment = self::$connection->prepare("
+                SELECT cards.id
+                FROM `cards`
+                join users on cards.user_id = users.id
+                where `email` = :email
+            ");
+            
+            $card_id_statment->execute([
+                ":email" => $email
+            ]);
+
+            $card_id = $card_id_statment->fetch(PDO::FETCH_ASSOC)["id"];
 
             // inserting the initial balance.
             TransactionController::CreateTransaction ("incomes", "Initial Balance", $initial_balance, "the initial balance when you created your acount", null, $card_id, null);

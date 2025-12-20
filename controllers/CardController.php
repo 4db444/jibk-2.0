@@ -6,23 +6,27 @@
         static function Connect (){
             try {
                 self::$connection = new PDO("mysql:host=localhost;dbname=jibk2.0", "root", "Brahim@444");
+                self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
             }catch (PDOException $e){
                 echo "error: " . $e->getMessage();
             }
         }
 
-        static function Create (string $bank, string $type, string $username) {
+        static function Create (string $bank, string $type, string $email) {
 
             $user_statment = self::$connection->prepare("
-                SELECT id
-                FROM users
-                WHERE username = :username
+                SELECT `id`
+                FROM `users`
+                WHERE `email` = :email
             ");
-
+            
+            
             $user_statment->execute([
-                ":username" => $username
+                ":email" => $email
             ]);
-
+            
             $user_id = $user_statment->fetch(PDO::FETCH_ASSOC)["id"];
 
             $insert_card_statment = self::$connection->prepare("
@@ -37,10 +41,11 @@
             ]);
         }
 
-        static function GetAllCards (){
+        static function GetAllUserCards (int $user_id){
             return self::$connection->query("
                 SELECT *
                 FROM cards
+                WHERE id = $user_id
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
     }
