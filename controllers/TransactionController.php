@@ -11,9 +11,34 @@
             }
         }
 
-        static function CreateTransaction (string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id){
+        static function CreateTransaction (string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id, $user_id){
+
+            if(!empty($category_id) && $type === "expenses"){
+                $category_limit = self::$connection->query("
+                    select `limit`
+                    from expense_category_limit
+                    where category_id = $category_id and user_id = $user_id
+                ")->fetch()["limit"];
+
+                if($category_limit){
+                    $current_month_category_expenses = self::$connection->query("
+                        select sum(amount) as total
+                        from expenses ex
+                        join cards c on c.id = ex.card_id
+                        where user_id = $user_id
+                    ")->fetch()["total"] ?? 0;
+
+                    if ($current_month_category_expenses + $amount > $category_limit){
+                        return [
+                            "success" => false,
+                            "error" => "can not add expense, category limit error !"
+                        ];
+                    }
+                }
+            }
 
             if (empty($date)){
+
                 $create_transaction_statment = self::$connection->prepare("
                     insert into $type (title, amount, description, card_id, category_id)
                     values (:title, :amount, :description, :card_id, :category_id)
@@ -41,6 +66,10 @@
                     ":category_id" => $category_id
                 ]);
             }
+
+            return [
+                "success" => true
+            ];
         }
 
         static function ShowAllTransactions (){
@@ -48,13 +77,13 @@
                 (
                     select incomes.id, title, amount, description, date, bank, type, 'incomes' as 'table' from incomes 
                     join cards on cards.id = incomes.card_id
-                    where cards.user_id = 1
+                    where cards.user_id = {$_SESSION["user"]["id"]}
                 )
                 union all
                 (
                     select expenses.id, title, amount, description, date, bank, type, 'expenses' as 'table' from expenses
                     join cards on expenses.card_id = cards.id
-                    where cards.user_id = 1
+                    where cards.user_id = {$_SESSION["user"]["id"]}
                 ) 
                 ORDER BY date desc, id desc
             ")->fetchAll(PDO::FETCH_ASSOC);

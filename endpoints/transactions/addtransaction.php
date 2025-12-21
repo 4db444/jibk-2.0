@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include "../../conf.php";
     include BASE_PATH . "/controllers/TransactionController.php";
 
@@ -11,7 +12,12 @@
         $category_id = $_POST["category_id"] ?? null;
         $date = $_POST["date"] == "" ? null : $_POST["date"];
     
-        TransactionController::CreateTransaction($type, $title, $amount, $description, $date, $card_id, $category_id);
+        $result = TransactionController::CreateTransaction($type, $title, $amount, $description, $date, $card_id, $category_id, $_SESSION["user"]["id"]);
+
+        if(!$result["success"]){
+            echo $result["error"];
+            die();
+        }
     
         header("location: " . BASE_URL . "/views/transactions/transactions.php");
     }else {

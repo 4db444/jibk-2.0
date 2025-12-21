@@ -83,7 +83,7 @@
             $user_id = $user_statment->fetch(PDO::FETCH_ASSOC)["id"];
 
             // creating the card record.
-            CardController::create($bank, $type, $user_id);
+            CardController::create($bank, $type, 0, $user_id);
 
             $card_id_statment = self::$connection->prepare("
                 SELECT cards.id
