@@ -11,12 +11,12 @@
         $card_id = $_POST["card_id"];
         $category_id = $_POST["category_id"] ?? null;
         $date = $_POST["date"] == "" ? null : $_POST["date"];
+        $is_reccuring = ($_POST["is_reccuring"] ?? NULL) ? true : false;
     
-        $result = TransactionController::CreateTransaction($type, $title, $amount, $description, $date, $card_id, $category_id, $_SESSION["user"]["id"]);
+        $result = TransactionController::CreateTransaction($type, $title, $amount, $description, $date, $card_id, $category_id, $_SESSION["user"]["id"], $is_reccuring);
 
         if(!$result["success"]){
-            echo $result["error"];
-            die();
+            $_SESSION["error"] = $result["error"];
         }
     
         header("location: " . BASE_URL . "/views/transactions/transactions.php");

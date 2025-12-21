@@ -11,7 +11,7 @@
             }
         }
 
-        static function CreateTransaction (string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id, $user_id){
+        static function CreateTransaction (string $type, string $title, float $amount, string $description, $date, int $card_id,$category_id, $user_id, bool $is_reccuring){
 
             if(!empty($category_id) && $type === "expenses"){
                 $category_limit = self::$connection->query("
@@ -65,6 +65,13 @@
                     ":card_id" => $card_id,
                     ":category_id" => $category_id
                 ]);
+            }
+
+            if($is_reccuring){
+                self::$connection->query("
+                    insert into `{$type}_events`
+                    values (null, " . self::$connection->lastInsertId() . ")
+                ");
             }
 
             return [
@@ -186,6 +193,28 @@
                     values('$category_id', '$user_id', '$limit')
                 ");
             }
+        }
+
+        static function GetEventTransactions(){
+            $sql = "
+                (
+                    select 'expenses' as type, title, amount, description, date, card_id, user_id, category_id
+                    from expenses_events
+                    left join expenses on expenses.id = expenses_events.expense_id
+                    left join cards on expenses.card_id = cards.id
+                )
+
+                union ALL
+
+                (
+                    select 'incomes' as type, title, amount, description, date, card_id, user_id, category_id
+                    from incomes_events
+                    left join incomes on incomes.id = incomes_events.income_id
+                    left join cards on incomes.card_id = cards.id
+                );
+            ";
+
+            return self::$connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 

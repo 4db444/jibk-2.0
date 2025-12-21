@@ -86,6 +86,18 @@
                 </select>
             </div>
 
+            <div class="flex items-center gap-3">
+                <input
+                    type="checkbox"
+                    id="is_reccuring"
+                    name="is_reccuring"
+                    class="w-5 h-5 rounded border-gray-300 text-green-600"
+                >
+                <label for="is_reccuring" class="font-medium select-none">
+                    Set to monthly transaction
+                </label>
+            </div>
+
             <button type="submit" class="bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Submit</button>
         </form>
     </div>
