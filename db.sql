@@ -173,4 +173,4 @@ INSERT INTO expenses_categories (id, name) VALUES
 (36, 'Pets'),
 (37, 'Other Expenses');
 
-select (select sum(amount) from incomes) - (select sum(1));
+SELECT * from expenses_categories ex left join expense_category_limit ec on ex.id = ec.category_id;

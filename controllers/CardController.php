@@ -53,11 +53,11 @@
         }
 
         static function GetTotalExpenses(int $id){
-            return self::$connection->query("select sum(amount) AS total from expenses")->fetch(PDO::FETCH_ASSOC)["total"];
+            return self::$connection->query("select sum(amount) AS total from expenses where card_id = $id")->fetch(PDO::FETCH_ASSOC)["total"];
         }
 
         static function GetTotalIncomes(int $id){
-            return self::$connection->query("select sum(amount) AS total from incomes")->fetch(PDO::FETCH_ASSOC)["total"];
+            return self::$connection->query("select sum(amount) AS total from incomes where card_id = $id")->fetch(PDO::FETCH_ASSOC)["total"];
         }
 
         static function destroy (int $id) {

@@ -101,15 +101,6 @@
                             <td class='py-3 px-2'>{$current_balance}</td>
 
                             <td class='py-3 px-2 flex gap-2'>
-
-                                <form action=\"./editTransaction.php\" method=\"post\">
-                                    <input type='hidden' name='id' value='{$card['id']}'>
-                                    <button type='submit'
-                                        class='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm'>
-                                        Update
-                                    </button>
-                                </form>
-
                                 <form action=\"../../endpoints/card/delete.php\" method=\"post\">
                                     <input type='hidden' name='id' value='{$card['id']}'>
                                     <button type='submit'
@@ -117,7 +108,6 @@
                                         Delete
                                     </button>
                                 </form>
-
                             </td>
                         </tr>
                         ";
