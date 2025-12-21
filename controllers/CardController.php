@@ -1,7 +1,7 @@
 <?php
 
     class CardController {
-        private static $connection;
+        public static $connection;
 
         static function Connect (){
             try {
@@ -53,11 +53,26 @@
         }
 
         static function GetTotalExpenses(int $id){
-            return self::$connection->query("select sum(amount) AS total from expenses where card_id = $id")->fetch(PDO::FETCH_ASSOC)["total"];
+            return (float) self::$connection->query("
+                select sum(amount) AS total from expenses where card_id = $id
+            ")->fetch(PDO::FETCH_ASSOC)["total"];
         }
 
         static function GetTotalIncomes(int $id){
-            return self::$connection->query("select sum(amount) AS total from incomes where card_id = $id")->fetch(PDO::FETCH_ASSOC)["total"];
+            return (float) self::$connection->query("select sum(amount) AS total from incomes where card_id = $id")->fetch(PDO::FETCH_ASSOC)["total"];
+        }
+
+        static function SetDefault (int $id, int $user_id){
+            self::$connection->query("
+                update cards
+                set is_main = 0
+                where user_id = $user_id and id != $id;
+            ");
+            self::$connection->query("
+                update cards
+                set is_main = 1
+                where id = $id;
+            ");
         }
 
         static function destroy (int $id) {

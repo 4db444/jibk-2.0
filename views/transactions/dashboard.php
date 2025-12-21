@@ -7,14 +7,14 @@
     }
     include "../../controllers/TransactionController.php";
 
-    $total_incomes = TransactionController::GetTotoalTransactions("incomes");
-    $total_expenses = TransactionController::GetTotoalTransactions("expenses");
+    $total_incomes = TransactionController::GetTotoalTransactions("incomes", $_SESSION["user"]["id"]) ?? 0;
+    $total_expenses = TransactionController::GetTotoalTransactions("expenses", $_SESSION["user"]["id"]) ?? 0;
 
-    $total_expenses_per_month = TransactionController::GetTotoalTransactionsPerMonth("expenses");
-    $total_incomes_per_month = TransactionController::GetTotoalTransactionsPerMonth("incomes");
+    $total_expenses_per_month = TransactionController::GetTotoalTransactionsPerMonth("expenses", $_SESSION["user"]["id"]) ?? [];
+    $total_incomes_per_month = TransactionController::GetTotoalTransactionsPerMonth("incomes", $_SESSION["user"]["id"]) ?? [];
 
-    $current_month_expenses = TransactionController::GetCurrentMonthTransactions("expenses");
-    $current_month_incomes = TransactionController::GetCurrentMonthTransactions("incomes");
+    $current_month_expenses = TransactionController::GetCurrentMonthTransactions("expenses", $_SESSION["user"]["id"]) ?? 0;
+    $current_month_incomes = TransactionController::GetCurrentMonthTransactions("incomes", $_SESSION["user"]["id"]) ?? 0;
 ?>
 
 <!DOCTYPE html>

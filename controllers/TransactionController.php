@@ -139,25 +139,33 @@
             }
         }
 
-        static function GetTotoalTransactions (string $table){
-            $sql = "select sum(amount) as sum from $table";
+        static function GetTotoalTransactions (string $table, int $user_id){
+            $sql = "
+                select sum(amount) as sum 
+                from $table 
+                join cards on cards.id = $table.card_id 
+                where user_id = $user_id";
 
             return self::$connection->query($sql)->fetch(PDO::FETCH_ASSOC)["sum"]; 
         }
 
-        static function GetCurrentMonthTransactions (string $table){
+        static function GetCurrentMonthTransactions (string $table, int $user_id){
             $sql = "
                 select sum(amount) as total
                 from $table
-                where month(date) = month(CURRENT_TIME);
+                join cards on cards.id = $table.card_id
+                where month(date) = month(CURRENT_TIME) and user_id = $user_id;
             ";
 
             return self::$connection->query($sql)->fetch(PDO::FETCH_ASSOC)["total"];
         }
 
-        static function GetTotoalTransactionsPerMonth (string $table){
-            $sql = "select MONTHNAME(date) as month, sum(amount) as total
+        static function GetTotoalTransactionsPerMonth (string $table, int $user_id){
+            $sql = "
+                select MONTHNAME(date) as month, sum(amount) as total
                 from $table
+                join cards on cards.id = $table.card_id
+                where user_id = $user_id
                 GROUP BY month
                 limit 12;
             ";

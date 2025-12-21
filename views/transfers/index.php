@@ -6,11 +6,11 @@
         die();
     }
 
-    include BASE_PATH . "/controllers/CardController.php";
+    // include BASE_PATH . "/controllers/CardController.php";
 
-    $errors = $_SESSION["errors"] ?? [];
-    unset($_SESSION["errors"]);
-    $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
+    // $errors = $_SESSION["errors"] ?? [];
+    // unset($_SESSION["errors"]);
+    // $cards = CardController::GetAllUserCards($_SESSION["user"]["id"]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <title>Cards</title>
+    <title>Transfers</title>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -30,7 +30,7 @@
         <form action="<?= BASE_URL ?>/endpoints/card/store.php" method="post"
               class="bg-white w-[400px] p-6 rounded-lg shadow-xl flex flex-col gap-4">
 
-            <h1 class="text-2xl font-semibold text-green-600 text-center">Add Card</h1>
+            <h1 class="text-2xl font-semibold text-green-600 text-center">Add Transfer</h1>
 
             <div>
                 <label class="block font-medium mb-1" for="title">bank</label>
@@ -92,15 +92,12 @@
                     foreach ($cards as $card) {
                         $total_expenses = CardController::GetTotalExpenses($card["id"]);
                         $total_incomes = CardController::GetTotalIncomes($card["id"]);
-                        $current_balance = ((float) $total_incomes ?? 0) - ((float) $total_expenses ?? 0);
-                    
-
-                        $is_main = $card["is_main"] ? "<i class=\"fa-solid fa-check\"></i>" : "";
+                        $current_balance = $total_incomes - $total_expenses;
                         echo "
                         <tr class='border-b border-gray-200 hover:bg-gray-50'>
                             <td class='py-3 px-2 capitalize'>{$card["bank"]}</td>
                             <td class='py-3 px-2 capitalize'>{$card["type"]}</td>
-                            <td class='py-3 px-2'>$is_main</td>
+                            <td class='py-3 px-2'>main</td>
                             <td class='py-3 px-2'>{$current_balance}</td>
 
                             <td class='py-3 px-2 flex gap-2'>
@@ -109,14 +106,6 @@
                                     <button type='submit'
                                         class='bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm'>
                                         Delete
-                                    </button>
-                                </form>
-                                
-                                <form action=\"../../endpoints/card/update.php\" method=\"post\">
-                                    <input type='hidden' name='id' value='{$card['id']}'>
-                                    <button type='submit'
-                                        class='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm'>
-                                        Set default card
                                     </button>
                                 </form>
                             </td>

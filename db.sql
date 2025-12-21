@@ -115,6 +115,22 @@ CREATE TABLE IF NOT EXISTS expenses_events (
         ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS transfers;
+CREATE TABLE IF NOT EXISTS transfers (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    sender_id int not null,
+    receiver_id int not null,
+    amount DECIMAL(10,2) NOT NULL,
+    date DATE DEFAULT (CURRENT_TIME),
+    FOREIGN KEY (sender_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY(receiver_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
 INSERT INTO incomes_categories (id, name) VALUES
 (1, 'Salary'),
 (2, 'Hourly Wages'),
@@ -122,14 +138,11 @@ INSERT INTO incomes_categories (id, name) VALUES
 (4, 'Business Income'),
 (5, 'Bonuses'),
 (6, 'Commissions'),
-(7, 'Investments'),
 (8, 'Dividends'),
 (9, 'Interest'),
 (10, 'Rental Income'),
-(11, 'Royalties'),
 (12, 'Government Benefits'),
 (13, 'Pension'),
-(14, 'Gifts'),
 (15, 'Refunds'),
 (16, 'Side Hustle'),
 (17, 'Other Income');
@@ -138,37 +151,30 @@ INSERT INTO expenses_categories (id, name) VALUES
 (1, 'Housing'),
 (2, 'Rent'),
 (3, 'Mortgage'),
-(4, 'Utilities'),
 (5, 'Electricity'),
 (6, 'Water'),
 (7, 'Internet'),
 (8, 'Mobile Phone'),
-(9, 'Food'),
 (10, 'Groceries'),
 (11, 'Dining Out'),
 (12, 'Transportation'),
-(13, 'Fuel'),
 (14, 'Public Transport'),
 (15, 'Vehicle Maintenance'),
 (16, 'Insurance'),
 (17, 'Health Insurance'),
 (18, 'Medical Expenses'),
 (19, 'Education'),
-(20, 'Tuition'),
 (21, 'Books & Supplies'),
 (22, 'Entertainment'),
-(23, 'Subscriptions'),
 (24, 'Travel'),
 (25, 'Clothing'),
 (26, 'Personal Care'),
 (27, 'Fitness'),
 (28, 'Savings'),
-(29, 'Taxes'),
 (30, 'Debt Repayment'),
 (31, 'Credit Card Payment'),
 (32, 'Loans'),
 (33, 'Donations'),
 (34, 'Gifts'),
 (35, 'Childcare'),
-(36, 'Pets'),
 (37, 'Other Expenses');
